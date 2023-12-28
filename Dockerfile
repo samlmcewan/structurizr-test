@@ -22,4 +22,4 @@ RUN chmod +x /usr/local/bin/structurizr-wrapper.sh
 # Make port 8080 available for potential server usage (optional)
 EXPOSE 8080
 
-ENTRYPOINT ["structurizr-wrapper.sh"]
+ENTRYPOINT ["java", "-cp", "/workspace/structurizr-cli/lib/*", "com.structurizr.cli.StructurizrCliApplication"]
