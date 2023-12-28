@@ -18,8 +18,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          docker run --rm -v $PWD:/workspace alpine:latest apk add --no-cache chmod
-          docker run --rm -v $PWD:/workspace alpine:latest chmod +x process_dsl.sh
+          docker run --rm -v $PWD:/workspace alpine:latest chmod +x process_dsl.sh  # No need for explicit chmod installation
 
       - name: Process DSL Files
         run: docker run --rm -v $PWD:/workspace alpine:latest /workspace/process_dsl.sh
