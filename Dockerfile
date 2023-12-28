@@ -1,4 +1,6 @@
 FROM structurizr/cli:latest
+COPY ./process_dsl.sh /usr/local/structurizr/
+RUN ls -l /usr/local/structurizr/process_dsl.sh
 
 # Optionally expose the port (if needed for your application)
 EXPOSE 8080
