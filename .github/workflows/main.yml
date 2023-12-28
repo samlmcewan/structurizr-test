@@ -14,15 +14,15 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Docker
-        run: docker pull ubuntu:latest  # Use a more general-purpose image
+        run: docker pull alpine:latest  # Using alpine:latest for a minimal base image
 
       - name: Install Dependencies
         run: |
-          docker run --rm -v $PWD:/workspace ubuntu:latest bash -c "apt-get update && apt-get install chmod && chmod +x process_dsl.sh"
-          docker run --rm -v $PWD:/workspace ubuntu:latest chmod +x process_dsl.sh
+          docker run --rm -v $PWD:/workspace alpine:latest apk add --no-cache chmod
+          docker run --rm -v $PWD:/workspace alpine:latest chmod +x process_dsl.sh
 
       - name: Process DSL Files
-        run: docker run --rm -v $PWD:/workspace ubuntu:latest /workspace/process_dsl.sh
+        run: docker run --rm -v $PWD:/workspace alpine:latest /workspace/process_dsl.sh
 
       - name: Commit changes
         if: always()
