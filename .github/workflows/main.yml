@@ -17,13 +17,13 @@ jobs:
         run: docker pull structurizr/cli:latest
 
       - name: Copy script into Docker container
-        run: docker cp process_dsl.sh $(docker ps -q -n 1):/workspace/
+        run: docker ps -q -n 1 | xargs -I {} docker cp process_dsl.sh {}:/
 
       - name: Make script executable
-        run: docker exec $(docker ps -q -n 1) chmod +x /workspace/process_dsl.sh
+        run: docker ps -q -n 1 | xargs -I {} docker exec {} chmod +x /process_dsl.sh
 
       - name: Process DSL Files
-        run: docker exec $(docker ps -q -n 1) /workspace/process_dsl.sh
+        run: docker ps -q -n 1 | xargs -I {} docker exec {} /process_dsl.sh
 
       - name: Commit changes
         if: always()
