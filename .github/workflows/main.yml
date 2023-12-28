@@ -25,11 +25,7 @@ jobs:
       - name: Process DSL Files
         run: |
           docker ps -q -n 1 | xargs -I {} docker exec {} /process_dsl.sh
-
-          # Add debugging information
-          ls -la mermaid/
-          cat mermaid/*.mermaid
-
+          
       - name: Commit changes
         if: always()
         run: |
