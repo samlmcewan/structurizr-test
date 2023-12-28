@@ -15,6 +15,11 @@ jobs:
       - name: Build Docker Image
         run: docker build -t structurizr-cli-image .
 
+      - name: Print Classpath and Run Structurizr CLI
+        run: |
+          docker run -v $PWD:/workspace -e CLASSPATH="/workspace/structurizr-cli/lib/*" structurizr-cli-image \
+            /bin/sh -c 'echo $CLASSPATH && java -cp "$CLASSPATH" com.structurizr.cli.StructurizrCliApplication'
+
       - name: Process DSL Files
         run: docker run --rm -v $PWD:/workspace -e CLASSPATH="/workspace/structurizr-cli/lib/*" structurizr-cli-image /workspace/process_dsl.sh
 
