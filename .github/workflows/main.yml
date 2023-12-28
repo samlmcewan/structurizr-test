@@ -32,7 +32,7 @@ jobs:
           echo "Verifying JAR file presence:"
           ls -l $GITHUB_WORKSPACE/structurizr-cli.jar | grep structurizr-cli.jar
       - run: |
-          export CLASSPATH="$GITHUB_WORKSPACE/structurizr-cli.jar"  # Set classpath explicitly
+          export CLASSPATH="$GITHUB_WORKSPACE/structurizr-cli.jar:$GITHUB_WORKSPACE/lib/*"  # Adjust classpath to include dependencies
       - run: mkdir -p mermaid
       - run: |
           for dsl_file in $(find . -name "*.dsl"); do
