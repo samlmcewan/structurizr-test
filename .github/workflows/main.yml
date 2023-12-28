@@ -36,10 +36,10 @@ jobs:
           # Check if the Mermaid file already exists
           if [ -f "${mermaid_file}" ]; then
             # If it exists, update it
-            java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+            (cd $GITHUB_WORKSPACE/structurizr-cli-1.35.0 && java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force)
           else
             # If it doesn't exist, create it
-            java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+            (cd $GITHUB_WORKSPACE/structurizr-cli-1.35.0 && java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid)
           fi
         done
       working-directory: ${{ github.workspace }}
