@@ -15,7 +15,8 @@ jobs:
         with:
           push: false
           tags: structurizr-onpremises:latest
-          load: true  # Load the image into the runner's daemon
+          load: true
+          id: build  # Specify the secret containing Git authentication token
 
       - run: mkdir -p mermaid
 
