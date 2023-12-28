@@ -27,6 +27,7 @@ jobs:
     - name: Process DSL Files
       run: |
         ls -la
+        echo "Classpath: .:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*"
         for dsl_file in $(find . -name "*.dsl"); do
           user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
           base_name=$(basename "${dsl_file}" .dsl)
@@ -42,6 +43,7 @@ jobs:
           fi
         done
       working-directory: ${{ github.workspace }}
+
       
 
 
