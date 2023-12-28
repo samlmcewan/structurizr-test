@@ -12,12 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Structurizr CLI
-        run: |
-          npm install -g structurizr-cli
+      - name: Set up Docker
+        uses: docker://structurizr/cli:latest
 
       - name: Process DSL Files
-        shell: bash
         run: |
           for dsl_file in $(find . -name "*.dsl"); do
             user_name=$(cut -d '/' -f 2 <<<"$dsl_file")
