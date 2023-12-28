@@ -14,7 +14,8 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Pull Structurizr On-Premises Image
-        run: docker pull structurizr-onpremises:latest
+        run: docker pull structurizr/onpremises
+        
 
       - run: mkdir -p mermaid
 
