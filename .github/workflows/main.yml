@@ -20,7 +20,7 @@ jobs:
         run: chmod +x process_dsl.sh
 
       - name: Process DSL Files
-        run: docker run --rm -v $PWD:/workspace structurizr/cli:latest /workspace/process_dsl.sh
+        run: docker run --rm -v $PWD:/workspace structurizr/cli:latest ./process_dsl.sh
 
       - name: Commit changes
         if: always()
