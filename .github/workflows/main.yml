@@ -14,7 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 16
-      - uses: ghcr.io/structurizr/cli-action@v1
+      - run: |
+          curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
+          unzip structurizr-cli.zip
+          cp $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli.jar
       - run: mkdir -p mermaid
       - run: |
           for dsl_file in $(find . -name "*.dsl"); do
@@ -23,8 +26,8 @@ jobs:
             mermaid_file="mermaid/${user_name}-${base_name}.mmd"
 
             if [ -f "${mermaid_file}" ]; then
-              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli-1.35.0.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
             else
-              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli-1.35.0.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
             fi
           done
