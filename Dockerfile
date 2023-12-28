@@ -13,7 +13,13 @@ RUN wget https://github.com/structurizr/cli/releases/download/v1.35.0/structuriz
 # Set classpath for Structurizr CLI
 ENV CLASSPATH="/workspace/structurizr-cli/lib/*"
 
+# Copy the wrapper script into the image
+COPY structurizr-wrapper.sh /usr/local/bin/structurizr-wrapper.sh
+
+# Make the wrapper script executable
+RUN chmod +x /usr/local/bin/structurizr-wrapper.sh
+
 # Make port 8080 available for potential server usage (optional)
 EXPOSE 8080
 
-ENTRYPOINT ["structurizr-cli"]
+ENTRYPOINT ["structurizr-wrapper.sh"]
