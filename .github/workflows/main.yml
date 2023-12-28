@@ -16,6 +16,9 @@ jobs:
       - name: Set up Docker
         run: docker pull structurizr/cli:latest
 
+      - name: Check if script exists
+        run: test -f /workspace/process_dsl.sh || echo "Script not found"
+
       - name: Make script executable
         run: chmod +x /workspace/process_dsl.sh
 
