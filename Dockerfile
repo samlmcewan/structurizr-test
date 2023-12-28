@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk add --no-cache openjdk17-jdk
+RUN apk add --no-cache openjdk17-jdk bash
 
 WORKDIR /workspace
 
