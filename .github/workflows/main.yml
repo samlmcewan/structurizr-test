@@ -14,20 +14,18 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'  # Ensure compatibility with Structurizr CLI
-          java-version: '17'      # Adjust if required
+          java-version: '17'      # Specified for Java 17
       - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: |
+          echo "Downloading Structurizr CLI..."
           curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
           unzip structurizr-cli.zip
           # Adjust file path if needed
           cp $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli.jar
-      - run: |
-          if [[ ! -f $GITHUB_WORKSPACE/structurizr-cli.jar || -z $(file $GITHUB_WORKSPACE/structurizr-cli.jar | grep Zip) ]]; then
-            echo "Structurizr CLI jar download incomplete or invalid."
-            exit 1
-          fi
+          echo "Verifying download..."
+          file $GITHUB_WORKSPACE/structurizr-cli.jar | grep Zip  # Check for zip file signature
       - run: |
           echo "Classpath: $CLASSPATH"
           echo "CLI jar path: $GITHUB_WORKSPACE/structurizr-cli.jar"
@@ -38,10 +36,14 @@ jobs:
             base_name=$(basename "${dsl_file}" .dsl)
             mermaid_file="mermaid/${user_name}-${base_name}.mmd"
 
+            echo "Processing DSL file: $dsl_file"
+            echo "Generating Mermaid diagram: $mermaid_file"
+
             if [ -f "${mermaid_file}" ]; then
               java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
             else
               java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
             fi
+
+            echo "Completed processing for $dsl_file"
           done
-          # Add additional logging or commands if needed
