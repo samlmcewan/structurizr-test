@@ -16,9 +16,11 @@ jobs:
       - name: Set up Docker
         run: docker pull structurizr/cli:latest
 
+      - name: Make script executable
+        run: chmod +x /workspace/process_dsl.sh
+
       - name: Process DSL Files
-        run: |
-          docker run --rm -v $PWD:/workspace structurizr/cli:latest /workspace/process_dsl.sh
+        run: docker run --rm -v $PWD:/workspace structurizr/cli:latest /workspace/process_dsl.sh
 
       - name: Commit changes
         if: always()
@@ -27,7 +29,7 @@ jobs:
           git config --global user.name "${GITHUB_ACTOR}"
           git add mermaid/
           git commit -m "Updated Mermaid diagrams from DSL changes"
-          
+
       - name: Push changes (optional)
         if: github.event_name == 'push'
         run: git push origin
