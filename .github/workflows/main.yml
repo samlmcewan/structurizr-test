@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          docker run --rm -v $PWD:/workspace ubuntu:latest apt-get update && apt-get install -y chmod
+          docker run --rm -v $PWD:/workspace ubuntu:latest sudo apt-get update && sudo apt-get install -y chmod && sudo chmod +x process_dsl.sh
           docker run --rm -v $PWD:/workspace ubuntu:latest chmod +x process_dsl.sh
 
       - name: Process DSL Files
