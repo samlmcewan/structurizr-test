@@ -15,32 +15,13 @@ jobs:
       - name: Set up Docker
         uses: docker://structurizr/cli:latest
         with:
-          args: -v /github/workspace:/usr/local/structurizr  # Pass volume mapping as a single string
-
-      - name: Process DSL Files
-        run: |
-          for dsl_file in /usr/local/structurizr/$(find . -name "*.dsl"); do
-            user_name=$(cut -d '/' -f 2 <<<"$dsl_file")
-            base_name=$(basename "$dsl_file" .dsl)
-            mermaid_file="/usr/local/structurizr/mermaid/$user_name/$base_name.mermaid"  # Use mounted path
-
-            if [[ -f "$mermaid_file" ]]; then
-              echo "Updating existing Mermaid diagram: $mermaid_file"
-              structurizr-cli export --force "$dsl_file" "$mermaid_file"
-            else
-              echo "Creating new Mermaid diagram: $mermaid_file"
-              structurizr-cli export "$dsl_file" "$mermaid_file"
-            fi
-          done
-          tail -f /dev/null  # Keep container running
+          args: export -i /usr/local/structurizr/**/*.dsl -o /usr/local/structurizr/mermaid/ --format mermaid
 
       - name: Commit changes
         if: always()
         run: |
           git add mermaid/
           git commit -m "Updated Mermaid diagrams from DSL changes"
-
       - name: Push changes (optional)
         if: github.event_name == 'push'
         run: git push origin
-
