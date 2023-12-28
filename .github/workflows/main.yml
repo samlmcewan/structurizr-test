@@ -17,8 +17,9 @@ jobs:
       run: |
         curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
         unzip structurizr-cli.zip
-        chmod +x structurizr-cli-1.35.0/lib/structurizr-cli-1.35.0.jar
-        sudo mv structurizr-cli-1.35.0/lib/structurizr-cli-1.35.0.jar /usr/local/bin/structurizr-cli
+        chmod +x lib/structurizr-cli-1.35.0.jar
+        sudo mv lib/structurizr-cli-1.35.0.jar /usr/local/bin/structurizr-cli
+
 
     - name: Create Mermaid Directory
       run: mkdir -p mermaid
