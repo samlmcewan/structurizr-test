@@ -18,13 +18,8 @@ jobs:
 
       - name: Process DSL Files
         run: |
-          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest ./structurizr.sh export -workspace /workspace/{} -format mermaid \;
+          docker run --rm -v $PWD:/workspace structurizr/cli:latest /workspace/process_dsl.sh
 
-      - name: Debugging information
-        run: |
-          ls -la mermaid/
-          cat mermaid/*.mermaid
-          
       - name: Commit changes
         if: always()
         run: |
