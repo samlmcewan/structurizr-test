@@ -1,12 +1,12 @@
 FROM alpine:latest
 
-RUN apk add --no-cache openjdk17-jdk bash
+RUN apk add --no-cache openjdk17-jdk bash curl
 
 # Create workspace directory
 WORKDIR /workspace
 
-# Download the latest Structurizr CLI JAR
-RUN wget -O /workspace/structurizr-cli.jar https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.jar
+# Download the latest Structurizr CLI JAR using curl
+RUN curl -o /workspace/structurizr-cli.jar https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.jar
 
 # Set classpath for Structurizr CLI
 ENV CLASSPATH="/workspace/structurizr-cli.jar"
