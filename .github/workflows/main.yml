@@ -32,24 +32,19 @@ jobs:
           echo "Verifying JAR file presence:"
           ls -l $GITHUB_WORKSPACE/structurizr-cli.jar | grep structurizr-cli.jar
       - run: |
-          echo "Classpath: $CLASSPATH"
-          echo "CLI jar path: $GITHUB_WORKSPACE/structurizr-cli.jar"
+          export CLASSPATH="$GITHUB_WORKSPACE/structurizr-cli.jar"  # Set classpath explicitly
       - run: mkdir -p mermaid
       - run: |
           for dsl_file in $(find . -name "*.dsl"); do
             user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
             base_name=$(basename "${dsl_file}" .dsl)
             mermaid_file="mermaid/${user_name}-${base_name}.mmd"
-
             echo "Processing DSL file: $dsl_file"
             echo "Generating Mermaid diagram: $mermaid_file"
-
             if [ -f "${mermaid_file}" ]; then
-              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+              java -cp "$CLASSPATH" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
             else
-              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+              java -cp "$CLASSPATH" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
             fi
-
             echo "Completed processing for $dsl_file"
           done
-
