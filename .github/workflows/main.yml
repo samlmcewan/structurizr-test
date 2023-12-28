@@ -16,9 +16,17 @@ jobs:
       - name: Set up Docker
         run: docker pull alpine:latest  # Using alpine:latest for a minimal base image
 
+      - name: Install Structurizr CLI
+        run: |
+          docker run --rm -v $PWD:/workspace alpine:latest apk add --no-cache openjdk17-jdk
+          docker run --rm -v $PWD:/workspace alpine:latest wget https://github.com/structurizr/cli/releases/download/v1.10.4/structurizr-cli-1.10.4.zip -P /workspace
+          docker run --rm -v $PWD:/workspace alpine:latest unzip /workspace/structurizr-cli-1.10.4.zip -d /workspace/structurizr-cli
+          docker run --rm -v $PWD:/workspace alpine:latest mv /workspace/structurizr-cli/structurizr.sh /usr/local/bin/structurizr-cli
+          docker run --rm -v $PWD:/workspace alpine:latest chmod +x /usr/local/bin/structurizr-cli
+
       - name: Install Dependencies
         run: |
-          docker run --rm -v $PWD:/workspace alpine:latest chmod +x /workspace/process_dsl.sh  # Adjust path for correct working directory
+          docker run --rm -v $PWD:/workspace alpine:latest chmod +x /workspace/process_dsl.sh
 
       - name: Process DSL Files
         run: docker run --rm -v $PWD:/workspace alpine:latest /workspace/process_dsl.sh
