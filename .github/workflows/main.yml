@@ -13,13 +13,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Install Homebrew
+    - name: Download and Install Structurizr CLI
       run: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-
-    - name: Install Structurizr CLI
-      run: brew install structurizr-cli
+        curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.7.0/structurizr-cli-1.7.0.zip
+        unzip structurizr-cli.zip
+        chmod +x structurizr-cli
+        sudo mv structurizr-cli /usr/local/bin/
 
     - name: Create Mermaid Directory
       run: mkdir -p mermaid
