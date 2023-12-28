@@ -15,7 +15,7 @@ jobs:
       - name: Set up Docker
         uses: docker://structurizr/cli:latest
         with:
-          args: -v ${{ github.workspace }}:/usr/local/structurizr
+          args: -v /github/workspace:/usr/local/structurizr  # Mount project workspace
 
       - name: Process DSL Files
         run: |
@@ -43,3 +43,4 @@ jobs:
       - name: Push changes (optional)
         if: github.event_name == 'push'
         run: git push origin
+
