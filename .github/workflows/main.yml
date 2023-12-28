@@ -17,6 +17,8 @@ jobs:
       run: |
         curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
         unzip structurizr-cli.zip
+        mv structurizr-cli-1.35.0/lib/structurizr-cli-1.35.0.jar .
+
     - name: Create Mermaid Directory
       run: mkdir -p mermaid
 
@@ -38,6 +40,7 @@ jobs:
           fi
         done
       working-directory: ${{ github.workspace }}
+
 
 
 
