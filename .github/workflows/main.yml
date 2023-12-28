@@ -10,50 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Set up JDK
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'adopt'
-        java-version: '11'
-
-    - name: Install Maven
-      run: |
-        sudo apt-get install -y maven
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
-
-    - name: Download and Install Structurizr CLI
-      run: |
-        curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
-        unzip structurizr-cli.zip
-        find . -name "structurizr-cli-*.jar" -type f
-        cp $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar
-
-    - name: Create Mermaid Directory
-      run: mkdir -p mermaid
-
-    - name: Process DSL Files
-      run: |
-        ls -la
-        echo "Classpath: .:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*"
-        for dsl_file in $(find . -name "*.dsl"); do
-          user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
-          base_name=$(basename "${dsl_file}" .dsl)
-          mermaid_file="mermaid/${user_name}-${base_name}.mmd"
-
-          # Check if the Mermaid file already exists
-          if [ -f "${mermaid_file}" ]; then
-            # If it exists, update it
-            java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
-          else
-            # If it doesn't exist, create it
-            java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar:$GITHUB_WORKSPACE/structurizr-cli-1.35.0/lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Adjust as needed
+          java-version: '17'      # Adjust as needed
+      - uses: actions/setup-maven@v3
+        with:
+          maven-version: '3.8.6'  # Specify desired version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '16'   # Specify desired version
+      - run: |
+          curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
+          unzip structurizr-cli.zip
+          cp $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli.jar
+      - run: |
+          if [[ ! -f $GITHUB_WORKSPACE/structurizr-cli.jar || -z $(file $GITHUB_WORKSPACE/structurizr-cli.jar | grep Zip) ]]; then
+            echo "Structurizr CLI jar download incomplete or invalid."
+            exit 1
           fi
-        done
-      working-directory: ${{ github.workspace }}
+      - run: |
+          echo "Classpath: $CLASSPATH"
+          echo "CLI jar path: $GITHUB_WORKSPACE/structurizr-cli.jar"
+      - run: mkdir -p mermaid
+      - run: |
+          for dsl_file in $(find . -name "*.dsl"); do
+            user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
+            base_name=$(basename "${dsl_file}" .dsl)
+            mermaid_file="mermaid/${user_name}-${base_name}.mmd"
+
+            if [ -f "${mermaid_file}" ]; then
+              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+            else
+              java -cp ".:${GITHUB_WORKSPACE}/structurizr-cli.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+            fi
+          done
