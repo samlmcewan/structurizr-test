@@ -10,20 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
       - name: Set up Docker
         run: docker pull structurizr/cli:latest
 
       - name: Process DSL Files
         run: |
-          docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/cli:latest find /workspace -type f -name "*.dsl" -exec structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;
+          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;
 
       - name: Commit changes
         if: always()
         run: |
           git add mermaid/
           git commit -m "Updated Mermaid diagrams from DSL changes"
+          
       - name: Push changes (optional)
         if: github.event_name == 'push'
         run: git push origin
