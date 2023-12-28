@@ -17,7 +17,7 @@ jobs:
         run: docker pull structurizr/cli:latest
 
       - name: Make script executable
-        run: chmod +x process_dsl.sh
+        run: chmod +x /workspace/process_dsl.sh
 
       - name: Process DSL Files
         run: docker run --rm -v $PWD:/workspace structurizr/cli:latest /workspace/process_dsl.sh
