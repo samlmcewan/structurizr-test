@@ -18,7 +18,7 @@ jobs:
 
       - name: Process DSL Files
         run: |
-          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest /opt/homebrew/bin/structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;
+          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest sh -c 'structurizr-cli_path=$(which structurizr-cli) && $structurizr-cli_path export -i {} -o /workspace/mermaid/ --format mermaid' \;
 
       - name: Commit changes
         if: always()
