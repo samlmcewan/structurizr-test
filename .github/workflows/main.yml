@@ -16,20 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build Docker image (using prebuilt image)
-        run: docker pull structurizr/cli:latest
+      - name: Build Docker image
+        run: docker build -t my-structurizr-image .  # Build image using Dockerfile with CMD
 
       - name: Process DSL Files
-        run: docker run --rm -v $PWD:/usr/local/structurizr structurizr/cli /usr/local/structurizr/process_dsl.sh  # Change path to match prebuilt image's working directory
-
-      - name: Commit changes
-        if: always()
-        run: |
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git config --global user.name "${GITHUB_ACTOR}"
-          git add mermaid/
-          git commit -m "Updated Mermaid diagrams from DSL changes"
-
-      - name: Push changes (optional)
-        if: github.event_name == 'push'
-        run: git push origin
+        run: docker run --rm -v $PWD:/usr/local/structurizr my-structurizr-image  # No need to specify a command
