@@ -13,12 +13,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Docker
-        run: docker pull structurizr/cli:latest
+      - name: Install Homebrew
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+          echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> $HOME/.profile
+          eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+
+      - name: Install structurizr-cli
+        run: brew install structurizr-cli
 
       - name: Process DSL Files
         run: |
-          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;
+          find . -name "*.dsl" -exec structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;
 
       - name: Commit changes
         if: always()
