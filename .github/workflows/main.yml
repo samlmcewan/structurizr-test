@@ -27,9 +27,9 @@ jobs:
             echo "Structurizr CLI jar download incomplete or invalid."
             exit 1
           fi
-      - run: echo "Classpath: $CLASSPATH"
-      - run: echo "CLI jar path: $GITHUB_WORKSPACE/structurizr-cli.jar"
-
+      - run: 
+        echo "Classpath: $CLASSPATH"
+        echo "CLI jar path: $GITHUB_WORKSPACE/structurizr-cli.jar"
       - run: mkdir -p mermaid
       - run: |
           for dsl_file in $(find . -name "*.dsl"); do
