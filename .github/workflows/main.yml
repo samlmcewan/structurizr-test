@@ -14,15 +14,15 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Docker
-        run: docker pull structurizr/cli:latest
+        run: docker pull ubuntu:latest  # Use a more general-purpose image
 
-      - name: Make script executable
-        run: chmod +x process_dsl.sh
+      - name: Install Dependencies
+        run: |
+          docker run --rm -v $PWD:/workspace ubuntu:latest apt-get update && apt-get install -y chmod
+          docker run --rm -v $PWD:/workspace ubuntu:latest chmod +x process_dsl.sh
 
       - name: Process DSL Files
-        # run: docker run --rm -v $PWD:/workspace structurizr/cli:latest "./process_dsl.sh"
-        run: docker run --rm -v $PWD:/workspace structurizr/cli:latest chmod +x ./process_dsl.sh && ./process_dsl.sh
-
+        run: docker run --rm -v $PWD:/workspace ubuntu:latest /workspace/process_dsl.sh
 
       - name: Commit changes
         if: always()
