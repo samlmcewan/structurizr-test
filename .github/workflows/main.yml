@@ -1,5 +1,35 @@
-name: Structurizr DSL Workflow with Pre-built On-Premises Image
+# name: Structurizr DSL Workflow with Pre-built On-Premises Image
 
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v1
+
+#       - name: Pull Structurizr On-Premises Image
+#         run: docker pull structurizr/onpremises
+
+#       - run: mkdir -p mermaid
+
+#       - name: Process DSL Files
+#         run: |
+#           for dsl_file in $(find . -name "*.dsl"); do
+#             user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
+#             base_name=$(basename "${dsl_file}" .dsl)
+#             mermaid_file="mermaid/${user_name}-${base_name}.mmd"
+
+#             docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/onpremises com.structurizr.cli.CliApplication export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
+#           done
+name: Structurizr DSL Workflow with Pre-built On-Premises Image
 on:
   push:
     branches:
@@ -8,7 +38,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -17,15 +46,14 @@ jobs:
 
       - name: Pull Structurizr On-Premises Image
         run: docker pull structurizr/onpremises
+        
 
       - run: mkdir -p mermaid
 
-      - name: Process DSL Files
-        run: |
+      - run: |
           for dsl_file in $(find . -name "*.dsl"); do
-            user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
-            base_name=$(basename "${dsl_file}" .dsl)
-            mermaid_file="mermaid/${user_name}-${base_name}.mmd"
-
-            docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/onpremises com.structurizr.cli.CliApplication export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
+            # ... (rest of your workflow steps)
+            docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/onpremises export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
+            # ...
           done
+          
