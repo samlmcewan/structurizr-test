@@ -37,9 +37,9 @@ jobs:
           # Check if the Mermaid file already exists
           if [ -f "${mermaid_file}" ]; then
             # If it exists, update it
-            structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+            java -jar /usr/local/bin/structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
           else
             # If it doesn't exist, create it
-            structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+            java -jar /usr/local/bin/structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
           fi
         done
