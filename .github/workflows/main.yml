@@ -16,11 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t structurizr-cli-image .
+      - name: Build Docker image (using prebuilt image)
+        run: docker pull structurizr/cli:latest
 
       - name: Process DSL Files
-        run: docker run --rm -v $PWD:/workspace structurizr-cli-image /workspace/process_dsl.sh
+        run: docker run --rm -v $PWD:/usr/local/structurizr structurizr/cli /usr/local/structurizr/process_dsl.sh  # Change path to match prebuilt image's working directory
 
       - name: Commit changes
         if: always()
