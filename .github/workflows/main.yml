@@ -15,7 +15,7 @@ jobs:
       - name: Set up Docker
         uses: docker://structurizr/cli:latest
         with:
-          args: -v /github/workspace:/usr/local/structurizr  # Mount project workspace
+          args: ["-v", "/github/workspace:/usr/local/structurizr"]  # Pass volume mapping as a list
 
       - name: Process DSL Files
         run: |
