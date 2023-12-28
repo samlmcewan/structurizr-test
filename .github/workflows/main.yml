@@ -11,6 +11,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Ensure compatibility with Structurizr CLI
+          java-version: '17'      # Adjust if required
       - uses: actions/setup-node@v4
         with:
           node-version: 16
@@ -23,8 +27,8 @@ jobs:
             echo "Structurizr CLI jar download incomplete or invalid."
             exit 1
           fi
-      - run: echo "Classpath:$CLASSPATH"
-      - run: echo "CLI jar path:$GITHUB_WORKSPACE/structurizr-cli.jar"
+      - run: echo "Classpath: $CLASSPATH"
+      - run: echo "CLI jar path: $GITHUB_WORKSPACE/structurizr-cli.jar"
       - run: mkdir -p mermaid
       - run: |
           for dsl_file in $(find . -name "*.dsl"); do
