@@ -16,7 +16,7 @@ jobs:
         run: docker build -t structurizr-cli-image .
 
       - name: Process DSL Files
-        run: docker run --rm -v $PWD:/workspace structurizr-cli-image /workspace/process_dsl.sh
+        run: docker run --rm -v $PWD:/workspace -e CLASSPATH="/workspace/structurizr-cli/lib/*" structurizr-cli-image /workspace/process_dsl.sh
 
       - name: Commit changes
         if: always()
