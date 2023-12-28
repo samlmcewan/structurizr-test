@@ -115,6 +115,26 @@ jobs:
     #         java -jar /usr/local/bin/structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
     #       fi
     #     done
+    # - name: Process DSL Files
+    #   run: |
+    #     for dsl_file in $(find . -name "*.dsl"); do
+    #       # Extract user name from the file path (customize this based on your directory structure)
+    #       user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
+      
+    #       # Extract base name from the DSL file (without extension)
+    #       base_name=$(basename "${dsl_file}" .dsl)
+      
+    #       mermaid_file="mermaid/${user_name}-${base_name}.mmd"
+      
+    #       # Check if the Mermaid file already exists
+    #       if [ -f "${mermaid_file}" ]; then
+    #         # If it exists, update it
+    #         java -cp /usr/local/bin/structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+    #       else
+    #         # If it doesn't exist, create it
+    #         java -cp /usr/local/bin/structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+    #       fi
+    #     done
     - name: Process DSL Files
       run: |
         for dsl_file in $(find . -name "*.dsl"); do
@@ -129,10 +149,10 @@ jobs:
           # Check if the Mermaid file already exists
           if [ -f "${mermaid_file}" ]; then
             # If it exists, update it
-            java -cp /usr/local/bin/structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+            java -jar /usr/local/bin/structurizr-cli-1.35.0.jar export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
           else
             # If it doesn't exist, create it
-            java -cp /usr/local/bin/structurizr-cli export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+            java -jar /usr/local/bin/structurizr-cli-1.35.0.jar export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
           fi
         done
 
