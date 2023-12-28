@@ -1,41 +1,45 @@
-name: Structurizr DSL Workflow with Pre-built On-Premises Image
+name: Generate Mermaid Diagrams from Structurizr DSL
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
 
 jobs:
-  build:
+  update-diagrams:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build Structurizr CLI Docker Image
+      - name: Install Structurizr CLI
         run: |
-          docker build -t structurizr-cli - <<EOF
-          FROM openjdk:11
-          RUN curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip \
-              && unzip structurizr-cli.zip \
-              && rm structurizr-cli.zip
-          ENTRYPOINT ["java", "-jar", "/structurizr-cli-1.35.0/structurizr-cli-1.35.0.jar"]
-          EOF
-
-      - name: Pull Structurizr On-Premises Image
-        run: docker pull structurizr/onpremises
-
-      - run: mkdir -p mermaid
+          npm install -g structurizr-cli
 
       - name: Process DSL Files
+        shell: bash
         run: |
           for dsl_file in $(find . -name "*.dsl"); do
-            user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
-            base_name=$(basename "${dsl_file}" .dsl)
-            mermaid_file="mermaid/${user_name}-${base_name}.mmd"
+            user_name=$(cut -d '/' -f 2 <<<"$dsl_file")
+            base_name=$(basename "$dsl_file" .dsl)
+            mermaid_file="mermaid/$user_name/$base_name.mermaid"
 
-            docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr-cli export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
+            if [[ -f "$mermaid_file" ]]; then
+              echo "Updating existing Mermaid diagram: $mermaid_file"
+              structurizr-cli export --force "$dsl_file" "$mermaid_file"
+            else
+              echo "Creating new Mermaid diagram: $mermaid_file"
+              structurizr-cli export "$dsl_file" "$mermaid_file"
+            fi
           done
+
+      - name: Commit changes
+        if: always()
+        run: |
+          git add mermaid/
+          git commit -m "Updated Mermaid diagrams from DSL changes"
+
+      - name: Push changes (optional)
+        if: github.event_name == 'push'
+        run: git push origin
+
