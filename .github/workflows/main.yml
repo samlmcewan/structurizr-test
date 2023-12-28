@@ -36,9 +36,9 @@ jobs:
           echo "Verifying JAR file presence:"
           ls -l $GITHUB_WORKSPACE/structurizr-cli.jar | grep structurizr-cli.jar
 
-      # Adjust this classpath based on your actual lib folder structure
+      # Assuming your lib folder is at the root of your repository
       - run: |
-          export CLASSPATH="$GITHUB_WORKSPACE/structurizr-cli.jar:<path/to/lib/folder>/*"
+          export CLASSPATH="$GITHUB_WORKSPACE/structurizr-cli.jar:$GITHUB_WORKSPACE/lib/*"
 
       - run: mkdir -p mermaid
       - run: |
