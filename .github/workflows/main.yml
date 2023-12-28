@@ -16,15 +16,14 @@ jobs:
       - name: Set up Docker
         run: docker pull structurizr/cli:latest
 
-      - name: Copy script into Docker container
-        run: docker ps -q -n 1 | xargs -I {} docker cp process_dsl.sh {}:/
-
-      - name: Make script executable
-        run: docker ps -q -n 1 | xargs -I {} docker exec {} chmod +x /process_dsl.sh
-
       - name: Process DSL Files
         run: |
-          docker ps -q -n 1 | xargs -I {} docker exec {} /process_dsl.sh
+          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest ./structurizr.sh export -workspace /workspace/{} -format mermaid \;
+
+      - name: Debugging information
+        run: |
+          ls -la mermaid/
+          cat mermaid/*.mermaid
           
       - name: Commit changes
         if: always()
