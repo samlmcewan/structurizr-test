@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          docker run --rm -v $PWD:/workspace alpine:latest chmod +x process_dsl.sh  # No need for explicit chmod installation
+          docker run --rm -v $PWD:/workspace alpine:latest chmod +x /workspace/process_dsl.sh  # Adjust path for correct working directory
 
       - name: Process DSL Files
         run: docker run --rm -v $PWD:/workspace alpine:latest /workspace/process_dsl.sh
