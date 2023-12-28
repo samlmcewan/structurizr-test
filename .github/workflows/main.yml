@@ -155,5 +155,7 @@ jobs:
             java -jar /usr/local/bin/structurizr-cli-1.35.0.jar export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
           fi
         done
+        - name: Debug
+          run: echo "Current directory: $(pwd), Files in current directory: $(ls -la)"
 
 
