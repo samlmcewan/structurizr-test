@@ -3,25 +3,24 @@ name: Generate Mermaid Diagrams from Structurizr DSL
 on:
   push:
     branches: [main]
+    paths:
+      - '**/*.dsl'  # Trigger only when DSL files change
   pull_request:
+    paths:
+      - '**/*.dsl'  # Trigger on pull requests with DSL changes
 
 jobs:
   update-diagrams:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
 
-      - name: Build Docker Image
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
         run: docker build -t structurizr-cli-image .
 
-      - name: Print Classpath and Run Structurizr CLI
-        run: |
-          docker run -v $PWD:/workspace -e CLASSPATH="/workspace/structurizr-cli/lib/*" structurizr-cli-image \
-            /bin/sh -c 'echo $CLASSPATH && java -cp "$CLASSPATH" com.structurizr.cli.StructurizrCliApplication'
-
       - name: Process DSL Files
-        run: docker run --rm -v $PWD:/workspace -e CLASSPATH="/workspace/structurizr-cli/lib/*" structurizr-cli-image /workspace/process_dsl.sh
+        run: docker run --rm -v $PWD:/workspace structurizr-cli-image /workspace/process_dsl.sh
 
       - name: Commit changes
         if: always()

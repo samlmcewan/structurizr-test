@@ -2,24 +2,17 @@ FROM alpine:latest
 
 RUN apk add --no-cache openjdk17-jdk bash
 
+# Create workspace directory
 WORKDIR /workspace
 
-# Download and extract Structurizr CLI
-RUN wget https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip -P /workspace \
-    && unzip /workspace/structurizr-cli-1.35.0.zip -d /workspace/structurizr-cli \
-    && mv /workspace/structurizr-cli/structurizr.sh /usr/local/bin/structurizr-cli \
-    && chmod +x /usr/local/bin/structurizr-cli
+# Download the latest Structurizr CLI JAR
+RUN wget -O /workspace/structurizr-cli.jar https://github.com/structurizr/cli/releases/latest/download/structurizr-cli.jar
 
 # Set classpath for Structurizr CLI
-ENV CLASSPATH="/workspace/structurizr-cli/lib/*"
+ENV CLASSPATH="/workspace/structurizr-cli.jar"
 
-# Copy the wrapper script into the image
-COPY structurizr-wrapper.sh /usr/local/bin/structurizr-wrapper.sh
-
-# Make the wrapper script executable
-RUN chmod +x /usr/local/bin/structurizr-wrapper.sh
-
-# Make port 8080 available for potential server usage (optional)
+# Optionally expose the port
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-cp", "/workspace/structurizr-cli/lib/*", "com.structurizr.cli.StructurizrCliApplication"]
+# Command to run Structurizr CLI
+ENTRYPOINT ["java", "-cp", "$CLASSPATH", "com.structurizr.cli.StructurizrCliApplication"]
