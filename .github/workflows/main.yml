@@ -22,6 +22,6 @@ jobs:
       - run: |
           for dsl_file in $(find . -name "*.dsl"); do
             # ... (rest of your workflow steps)
-            docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr-onpremises:latest export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
+            docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/onpremises export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
             # ...
           done
