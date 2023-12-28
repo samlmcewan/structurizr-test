@@ -3,7 +3,7 @@ name: Structurizr DSL Workflow
 on:
   push:
     branches:
-      - main  # Change this to your main branch
+      - main
 
 jobs:
   build:
@@ -17,8 +17,7 @@ jobs:
       run: |
         curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
         unzip structurizr-cli.zip
-        cp structurizr-cli-1.35.0/lib/structurizr-cli-1.35.0.jar $GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar
-      shell: /usr/bin/bash -e {0}
+        cp structurizr-cli-1.35.0/structurizr-cli-1.35.0.jar $GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar
 
     - name: Create Mermaid Directory
       run: mkdir -p mermaid
@@ -34,13 +33,14 @@ jobs:
           # Check if the Mermaid file already exists
           if [ -f "${mermaid_file}" ]; then
             # If it exists, update it
-            java -cp ".:$GITHUB_WORKSPACE/lib/structurizr-cli-1.35.0.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+            java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
           else
             # If it doesn't exist, create it
-            java -cp ".:$GITHUB_WORKSPACE/lib/structurizr-cli-1.35.0.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+            java -cp ".:$GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
           fi
         done
       working-directory: ${{ github.workspace }}
+
 
 
 
