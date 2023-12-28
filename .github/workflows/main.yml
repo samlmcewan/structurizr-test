@@ -17,7 +17,6 @@ jobs:
       run: |
         curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
         unzip structurizr-cli.zip
-
     - name: Create Mermaid Directory
       run: mkdir -p mermaid
 
@@ -32,13 +31,14 @@ jobs:
           # Check if the Mermaid file already exists
           if [ -f "${mermaid_file}" ]; then
             # If it exists, update it
-            java -cp "structurizr-cli-1.35.0.jar:lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+            java -cp ".:structurizr-cli-1.35.0.jar:lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
           else
             # If it doesn't exist, create it
-            java -cp "structurizr-cli-1.35.0.jar:lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+            java -cp ".:structurizr-cli-1.35.0.jar:lib/*" com.structurizr.cli.CliApplication export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
           fi
         done
       working-directory: ${{ github.workspace }}
+
 
 
 
