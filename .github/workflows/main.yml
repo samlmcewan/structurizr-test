@@ -17,7 +17,7 @@ jobs:
 
       - name: Process DSL Files
         run: |
-          docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/cli:latest export -i /workspace/**/*.dsl -o /workspace/mermaid/ --format mermaid
+          docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/cli:latest sh -c 'find /workspace -type f -name "*.dsl" -exec structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;'
 
       - name: Commit changes
         if: always()
