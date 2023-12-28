@@ -31,12 +31,14 @@ jobs:
           # Check if the Mermaid file already exists
           if [ -f "${mermaid_file}" ]; then
             # If it exists, update it
-            java -jar structurizr-cli-1.35.0.jar export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
+            java -jar ./structurizr-cli-1.35.0.jar export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid --force
           else
             # If it doesn't exist, create it
-            java -jar structurizr-cli-1.35.0.jar export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
+            java -jar ./structurizr-cli-1.35.0.jar export -i "${dsl_file}" -o "${mermaid_file}" --format mermaid
           fi
         done
+      working-directory: ${{ github.workspace }}
+
 
 
 # name: Structurizr DSL Workflow
