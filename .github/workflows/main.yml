@@ -1,35 +1,5 @@
-# name: Structurizr DSL Workflow with Pre-built On-Premises Image
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - uses: actions/checkout@v3
-
-#       - name: Set up Docker Buildx
-#         uses: docker/setup-buildx-action@v1
-
-#       - name: Pull Structurizr On-Premises Image
-#         run: docker pull structurizr/onpremises
-
-#       - run: mkdir -p mermaid
-
-#       - name: Process DSL Files
-#         run: |
-#           for dsl_file in $(find . -name "*.dsl"); do
-#             user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
-#             base_name=$(basename "${dsl_file}" .dsl)
-#             mermaid_file="mermaid/${user_name}-${base_name}.mmd"
-
-#             docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/onpremises com.structurizr.cli.CliApplication export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
-#           done
 name: Structurizr DSL Workflow with Pre-built On-Premises Image
+
 on:
   push:
     branches:
@@ -38,22 +8,34 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      - name: Build Structurizr CLI Docker Image
+        run: |
+          docker build -t structurizr-cli - <<EOF
+          FROM openjdk:11
+          RUN curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip \
+              && unzip structurizr-cli.zip \
+              && rm structurizr-cli.zip
+          ENTRYPOINT ["java", "-jar", "/structurizr-cli-1.35.0/structurizr-cli-1.35.0.jar"]
+          EOF
+
       - name: Pull Structurizr On-Premises Image
         run: docker pull structurizr/onpremises
-        
 
       - run: mkdir -p mermaid
 
-      - run: |
+      - name: Process DSL Files
+        run: |
           for dsl_file in $(find . -name "*.dsl"); do
-            # ... (rest of your workflow steps)
-            docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr/onpremises export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
-            # ...
+            user_name=$(echo "${dsl_file}" | cut -d'/' -f2)
+            base_name=$(basename "${dsl_file}" .dsl)
+            mermaid_file="mermaid/${user_name}-${base_name}.mmd"
+
+            docker run --rm -v $GITHUB_WORKSPACE:/workspace structurizr-cli export -i /workspace/${dsl_file} -o /workspace/${mermaid_file} --format mermaid
           done
-          
