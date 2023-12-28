@@ -13,19 +13,24 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'  # Ensure compatibility with Structurizr CLI
-          java-version: '17'      # Specified for Java 17
+          distribution: 'temurin'
+          java-version: '17'
       - uses: actions/setup-node@v4
         with:
           node-version: 16
       - run: |
           echo "Downloading Structurizr CLI..."
           curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
-          unzip structurizr-cli.zip
-          # Adjust file path if needed
-          cp $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli.jar
           echo "Verifying download..."
-          file $GITHUB_WORKSPACE/structurizr-cli.jar | grep Zip  # Check for zip file signature
+          file $GITHUB_WORKSPACE/structurizr-cli.zip | grep Zip
+          echo "Extracting JAR file..."
+          unzip structurizr-cli.zip
+          # Verify location and adjust if needed
+          echo "Listing workspace contents:"
+          ls -l $GITHUB_WORKSPACE
+          cp $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli.jar
+          echo "Verifying JAR file presence:"
+          ls -l $GITHUB_WORKSPACE/structurizr-cli.jar | grep structurizr-cli.jar
       - run: |
           echo "Classpath: $CLASSPATH"
           echo "CLI jar path: $GITHUB_WORKSPACE/structurizr-cli.jar"
@@ -47,3 +52,4 @@ jobs:
 
             echo "Completed processing for $dsl_file"
           done
+
