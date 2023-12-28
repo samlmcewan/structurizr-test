@@ -13,9 +13,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Set up Docker
+        run: docker pull structurizr/cli:latest
+
       - name: Process DSL Files
         run: |
-          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;
+          find . -name "*.dsl" -exec docker run --rm -v $PWD:/workspace structurizr/cli:latest /opt/homebrew/bin/structurizr-cli export -i {} -o /workspace/mermaid/ --format mermaid \;
 
       - name: Commit changes
         if: always()
