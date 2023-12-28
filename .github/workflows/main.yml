@@ -23,6 +23,8 @@ jobs:
       - name: Commit changes
         if: always()
         run: |
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
           git add mermaid/
           git commit -m "Updated Mermaid diagrams from DSL changes"
           
