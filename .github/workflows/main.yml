@@ -14,7 +14,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '17'  # Adjust this based on your CLI compatibility
       - uses: actions/setup-node@v4
         with:
           node-version: 16
@@ -25,14 +25,21 @@ jobs:
           file $GITHUB_WORKSPACE/structurizr-cli.zip | grep Zip
           echo "Extracting JAR file..."
           unzip structurizr-cli.zip
-          # Verify location and adjust if needed
+
+      # Verify location and adjust if needed
+      - run: |
           echo "Listing workspace contents:"
           ls -l $GITHUB_WORKSPACE
-          cp $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli.jar
+          # Check if structurizr-cli.jar is actually where you expect
+          # Modify `*.jar` if the naming is different
+          mv $(find . -name "structurizr-cli-*.jar" -type f) $GITHUB_WORKSPACE/structurizr-cli.jar
           echo "Verifying JAR file presence:"
           ls -l $GITHUB_WORKSPACE/structurizr-cli.jar | grep structurizr-cli.jar
+
+      # Adjust this classpath based on your actual lib folder structure
       - run: |
-          export CLASSPATH="$GITHUB_WORKSPACE/structurizr-cli.jar:$GITHUB_WORKSPACE/lib/*"  # Adjust classpath to include dependencies
+          export CLASSPATH="$GITHUB_WORKSPACE/structurizr-cli.jar:<path/to/lib/folder>/*"
+
       - run: mkdir -p mermaid
       - run: |
           for dsl_file in $(find . -name "*.dsl"); do
