@@ -12,12 +12,13 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-
+      
     - name: Download and Install Structurizr CLI
       run: |
         curl -o structurizr-cli.zip -L https://github.com/structurizr/cli/releases/download/v1.35.0/structurizr-cli-1.35.0.zip
         unzip structurizr-cli.zip
-        cp structurizr-cli-1.35.0/lib/structurizr-cli-1.35.0.jar $GITHUB_WORKSPACE/
+        cp structurizr-cli-1.35.0/lib/structurizr-cli-1.35.0.jar $GITHUB_WORKSPACE/structurizr-cli-1.35.0.jar
+      shell: /usr/bin/bash -e {0}
 
     - name: Create Mermaid Directory
       run: mkdir -p mermaid
