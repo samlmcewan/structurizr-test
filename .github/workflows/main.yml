@@ -12,18 +12,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Setup Docker
-        uses: actions/setup-docker@v2
-
-      - name: Pull Structurizr CLI image
-        run: docker pull structurizr/cli:latest
-
-      - name: Process DSL file
-        run: docker run --rm -v $(pwd):/workspace structurizr/cli process -f /workspace/workspace-3.dsl
-
-      - name: Export to Mermaid
-        run: docker run --rm -v $(pwd):/workspace structurizr/cli export -f mermaid -o architecture.mermaid
+      - name: Run the build process with Docker
+        uses: addnab/docker-run-action@v3
+        with:
+            image: structurizr/cli:latest
+            options: -v ${{ github.workspace }}:/var/www
+            run: |
+                docker run --rm -v $(pwd):/workspace structurizr/cli process -f /workspace/workspace-3.dsl
+                docker run --rm -v $(pwd):/workspace structurizr/cli export -f mermaid -o architecture.mermaid
 
       - name: Commit exported Mermaid diagram
         uses: EndBug/add-and-commit@v8
