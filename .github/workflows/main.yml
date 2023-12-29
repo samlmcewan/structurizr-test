@@ -12,10 +12,13 @@ jobs:
       - name: Pull Structurizr CLI image
         run: docker pull structurizr/cli:latest
 
+      - name: Copy DSL files to workspace
+        run: docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
+          /bin/sh -c "cp /workspace/*.dsl /workspace/mermaid"
+
       - name: Run Structurizr CLI
-        run: |
-          docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
-            export -workspace /workspace/*.dsl -format mermaid -output /workspace/mermaid
+        run: docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
+          export -workspace /workspace/mermaid/*.dsl -format mermaid -output /workspace/mermaid
 
       - name: Commit Mermaid files
         uses: stefanzweifel/git-auto-commit-action@v4
