@@ -29,7 +29,7 @@ jobs:
           author_name: GitHub Action
           author_email: github-actions@github.com
           message: "[Automated] Added Mermaid diagrams from DSLs"
-          add: mermaid/**/*.mmd  # Update pathspec to include the mermaid directory
+          add: mermaid/*.mmd  # Update pathspec to include the mermaid directory
           cwd: mermaid  # Set the current working directory to mermaid
           default_author: github_actor
           pathspec_error_handling: ignore
