@@ -14,7 +14,6 @@ jobs:
 
       - name: Run Structurizr CLI
         run: |
-          docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
             export -workspace *.dsl -format mermaid -output /mermaid
 
       - name: Commit Mermaid files
