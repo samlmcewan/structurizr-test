@@ -1,4 +1,4 @@
-workspace "Example workspace 13244354432224" "Example description 3" {
+workspace "Example workspace 3" "Example description 3" {
 
     model {
         user = person "User"
