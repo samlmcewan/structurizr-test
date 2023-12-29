@@ -1,8 +1,8 @@
-Link - doesn't render in Github
+Link - doesn't render in Github markdown
 
 [View System Architecture Diagram](https://github.com/samlmcewan/structurizr-test/blob/main/mermaid/structurizr-SoftwareSystem-SystemContext.mmd)
 
-Embed 
+Embed - does render but will have to be copied over again if mermaid file changes
 
 ```mermaid
 graph TB
