@@ -19,8 +19,7 @@ jobs:
       - name: Find DSL files
         id: find_dsl_files
         run: |
-          DSL_FILES=$(find . -name '*.dsl' -type f)
-          echo "::set-env name=DSL_FILES::$DSL_FILES"
+          echo "DSL_FILES=$(find . -name '*.dsl' -type f)" >> $GITHUB_ENV
 
       - name: Set up DSL files for Structurizr CLI
         run: |
