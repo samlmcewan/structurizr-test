@@ -1,23 +1,39 @@
-name: Structurizr to Mermaid Conversion
+name: Convert DSL to Mermaid
 
-on: [push]
+on:
+  push:
+    branches: [main]  # Trigger on pushes to the main branch
+    paths:
+      - '**/*.dsl'  # Run when any DSL file changes
 
 jobs:
-  convert-dsl:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Pull Structurizr CLI image
-        run: docker pull structurizr/cli:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image (if needed)
+        if: ${{ !contains(github.event.commits[0].message, '[skip ci]') }}  # Skip build if commit message contains '[skip ci]'
+        run: |
+          docker buildx build . -t structurizr-cli-image --push  # Replace with your Docker image name
 
       - name: Run Structurizr CLI
-        run: docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
-          /usr/local/structurizr-cli/structurizr.sh export --workspace /workspace/workspace.dsl --format mermaid
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspace \
+            structurizr-cli-image  \
+            generate-mermaid-diagrams \
+            --workspace /workspace \
+            --output-directory /workspace/mermaid
 
-      - name: Upload Mermaid files as artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: mermaid-diagrams
-          path: mermaid/*.mmd
+      - name: Commit and push Mermaid files
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Generated Mermaid files"
+          git push
