@@ -1,6 +1,6 @@
 name: Structurizr to Mermaid Conversion
 
-on: [push]  # Trigger the workflow on push events
+on: [push]
 
 jobs:
   convert-dsl:
@@ -9,22 +9,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build Docker image (optional)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v3
-        with:
-          context: .  # Assuming Dockerfile is in the root
-          file: Dockerfile  # Replace with your Dockerfile name if needed
-          push: false
-          tags: structurizr-cli  # Replace with your desired tag
+      - name: Pull Structurizr CLI image
+        run: docker pull structurizr/cli:latest
 
       - name: Run Structurizr CLI
         run: |
-          docker run --rm -v $(pwd):/workspace structurizr-cli:latest \
-            workspace-convert /workspace/*.dsl /workspace/mermaid/*.mmd \
+          docker run --rm -v $(pwd):/usr/local/structurizr structurizr/cli:latest \
+            workspace-convert /usr/local/structurizr/*.dsl /usr/local/structurizr/mermaid/*.mmd \
             --format mermaid
 
       - name: Commit Mermaid files
