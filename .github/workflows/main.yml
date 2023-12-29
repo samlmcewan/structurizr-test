@@ -21,10 +21,15 @@ jobs:
         run: |
           export DSL_FILES=$(find . -name '*.dsl' -type f)
 
+      - name: Set up DSL files for Structurizr CLI
+        run: |
+          mkdir -p /github/workspace/dsl
+          cp $DSL_FILES /github/workspace/dsl/
+
       - name: Export Structurizr workspaces
         uses: gilbertotcc/structurizr-action@v1
         with:
-          args: export -workspace "${DSL_FILES}" -format mermaid -output mermaid
+          args: export -workspace "/github/workspace/dsl" -format mermaid -output mermaid
 
       - name: Commit exported Mermaid diagrams
         uses: EndBug/add-and-commit@v8
