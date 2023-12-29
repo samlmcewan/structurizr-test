@@ -13,13 +13,11 @@ jobs:
         run: docker pull structurizr/cli:latest
 
       - name: Run Structurizr CLI
-        run: |
-          docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
-          export -workspace *.dsl -format mermaid -output /mermaid
+        run: docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
+          /usr/local/structurizr-cli/structurizr.sh export --workspace /workspace/workspace.dsl --format mermaid
 
-      - name: Commit Mermaid files
-        uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Upload Mermaid files as artifacts
+        uses: actions/upload-artifact@v3
         with:
-          commit_message: "Converted DSL files to Mermaid"
-          branch: main
-          file_pattern: mermaid/*
+          name: mermaid-diagrams
+          path: mermaid/*.mmd
