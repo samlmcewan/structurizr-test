@@ -15,7 +15,7 @@ jobs:
       - name: Export Structurizr workspace
         uses: gilbertotcc/structurizr-action@v1
         with:
-          args: 'export -workspace ./workspace-3.dsl -format mermaid'
+          args: 'export -workspace ./workspace-3.dsl -format mermaid -output mermaid'
       - name: Commit exported Mermaid diagram
         uses: EndBug/add-and-commit@v8
         with:
