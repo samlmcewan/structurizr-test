@@ -14,7 +14,7 @@ jobs:
 
       - name: Run Structurizr CLI
         run: docker run --rm -v $(pwd):/workspace structurizr/cli:latest \
-          structurizr export --workspace /workspace/workspace.dsl --format mermaid
+          /usr/local/structurizr-cli/structurizr.sh export --workspace /workspace/workspace.dsl --format mermaid
 
       - name: Upload Mermaid files as artifacts
         uses: actions/upload-artifact@v3
