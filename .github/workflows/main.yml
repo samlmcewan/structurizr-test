@@ -22,19 +22,22 @@ jobs:
         uses: gilbertotcc/structurizr-action@v1
         with:
           args: ${{ format('export -workspace {0} -format mermaid -output mermaid', steps.find_dsl_files.outputs.dsl_files) }}
+        env:
+          DSL_FILES: ${{ steps.find_dsl_files.outputs.dsl_files }}
 
       - name: Commit exported Mermaid diagrams
-        uses: actions/git@v4
+        uses: EndBug/add-and-commit@v8
         with:
-          args: |
-            add ./mermaid/*.mmd
-            git config --local user.email "github-actions@github.com"
-            git config --local user.name "GitHub Action"
-            git commit -m "[Automated] Added Mermaid diagrams from DSLs"
-            git push
-          token: ${{ secrets.GITHUB_TOKEN }}
+          author_name: GitHub Action
+          author_email: github-actions@github.com
+          message: "[Automated] Added Mermaid diagrams from DSLs"
+          add: "${{ env.DSL_FILES }}"  # Use the DSL_FILES environment variable
+          cwd: mermaid
+          default_author: github_actor
+          pathspec_error_handling: ignore
+          push: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
 # Address deprecated `set-output` warnings:
 # 1. Replace outdated syntax with environment variables in `structurizr-action` step.
 # 2. Update other steps accordingly or switch to using built-in `git` action for commit/push.
-
