@@ -9,28 +9,19 @@ jobs:
   process-and-export:
     runs-on: ubuntu-latest
 
-    env:
-      # Use an empty DSL_FILES variable initially
-      DSL_FILES: ""
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Load DSL file paths from Environment File
-        id: load_dsl_files
-        env:
-          # Define location of the Environment File
-          DSL_FILE_PATH: ./DSL_FILES.env
+      - name: Find DSL files in root directory
         run: |
-          # Read each line of the file into the DSL_FILES variable
-          DSL_FILES=$(cat $DSL_FILE_PATH)
+          DSL_FILES=$(find . -name '*.dsl' -type f)
+          echo "::set-env name=DSL_FILES::$DSL_FILES"  # Set environment variable
 
       - name: Set up DSL files for Structurizr CLI
         run: |
           mkdir -p $GITHUB_WORKSPACE/dsl
-          # Loop through each file path in DSL_FILES and copy them
-          for file in $DSL_FILES; do
+          for file in $DSL_FILES; do  # Access variable directly
             cp $file $GITHUB_WORKSPACE/dsl/
           done
 
@@ -51,4 +42,3 @@ jobs:
           pathspec_error_handling: ignore
           push: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
