@@ -9,6 +9,9 @@ jobs:
   process-and-export:
     runs-on: ubuntu-latest
 
+    env:
+      DSL_FILES: ""
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -16,8 +19,8 @@ jobs:
       - name: Find DSL files
         id: find_dsl_files
         run: |
-          echo "DSL_FILES=$(find . -name '*.dsl' -type f)" > env_vars
-          cp env_vars $GITHUB_ENV
+          DSL_FILES=$(find . -name '*.dsl' -type f)
+          echo "::set-env name=DSL_FILES::$DSL_FILES"
 
       - name: Set up DSL files for Structurizr CLI
         run: |
