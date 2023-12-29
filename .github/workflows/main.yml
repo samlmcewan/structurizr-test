@@ -16,7 +16,7 @@ jobs:
       - name: Setup Docker
         uses: actions/setup-docker@v2
 
-      - name: Login to Docker Hub (optional)
+      #- name: Login to Docker Hub (optional)
         # If your Docker registry requires authentication, uncomment this step
         # and provide your Docker Hub credentials
         # run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
