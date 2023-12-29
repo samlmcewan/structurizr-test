@@ -18,8 +18,6 @@ jobs:
             image: structurizr/cli:latest
             options: -v ${{ github.workspace }}:/var/www
             run: |
-                sudo apt-get update
-                sudo apt-get install -y docker.io
                 docker run --rm -it -v $(pwd):/home local/structurizr:latest \
                 export -workspace workspace-3.dsl -format mermaid -o ./
       - name: Commit exported Mermaid diagram
