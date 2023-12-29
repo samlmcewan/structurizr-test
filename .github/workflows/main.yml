@@ -14,7 +14,7 @@ jobs:
 
       - name: Run Structurizr CLI
         run: |
-            export -workspace *.dsl -format mermaid -output /mermaid
+            export *.dsl -format mermaid -output /mermaid
 
       - name: Commit Mermaid files
         uses: stefanzweifel/git-auto-commit-action@v4
