@@ -1,9 +1,9 @@
-name: Process DSL and Export to Mermaid
+name: Process DSLs and Export to Mermaid
 
 on:
   push:
     paths:
-      - 'workspace-3.dsl'  # Path to the DSL file in the root directory
+      - '*.dsl'  # Trigger on any DSL file change in the root directory
 
 jobs:
   process-and-export:
@@ -12,15 +12,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Export Structurizr workspace
+
+      - name: Find DSL files
+        id: find_dsl_files
+        run: |
+          echo "::set-output name=dsl_files::$(find . -name '*.dsl' -type f)"
+
+      - name: Export Structurizr workspaces
         uses: gilbertotcc/structurizr-action@v1
         with:
-          args: 'export -workspace ./workspace-3.dsl -format mermaid -output mermaid'
-      - name: Commit exported Mermaid diagram
+          args: ${{ format('export -workspace {0} -format mermaid -output mermaid', steps.find_dsl_files.outputs.dsl_files) }}
+
+      - name: Commit exported Mermaid diagrams
         uses: EndBug/add-and-commit@v8
         with:
           author_name: GitHub Action
           author_email: github-actions@github.com
-          message: "[Automated] Added Mermaid diagram from DSL"
-          add: mermaid/structurizr-SoftwareSystem-SystemContext.mmd
-
+          message: "[Automated] Added Mermaid diagrams from DSLs"
+          add: mermaid/**/*.mmd  # Commit all Mermaid files
