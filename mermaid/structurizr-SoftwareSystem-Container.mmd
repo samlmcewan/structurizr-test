@@ -1,0 +1,13 @@
+graph TB
+  linkStyle default fill:#ffffff
+  1["<div style='font-weight: bold'>User</div><div style='font-size: 70%; margin-top: 0px'>[Person]</div><div style='font-size: 80%; margin-top:10px'></div>"]
+  style 1 fill:#08427b,stroke:#052e56,color:#ffffff
+  subgraph boundary [Software System]
+    4("<div style='font-weight: bold'>Database</div><div style='font-size: 70%; margin-top: 0px'>[Container]</div><div style='font-size: 80%; margin-top:10px'></div>")
+    style 4 fill:#438dd5,stroke:#2e6295,color:#ffffff
+    3("<div style='font-weight: bold'>Web Application</div><div style='font-size: 70%; margin-top: 0px'>[Container]</div><div style='font-size: 80%; margin-top:10px'></div>")
+    style 3 fill:#438dd5,stroke:#2e6295,color:#ffffff
+  end
+  style boundary fill:#ffffff,stroke:#000000,color:#000000
+  1-. "<div>Uses</div><div style='font-size: 70%'></div>" .->3
+  3-. "<div>Reads from and writes to</div><div style='font-size: 70%'></div>" .->4
