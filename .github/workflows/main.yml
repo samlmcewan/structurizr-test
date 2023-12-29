@@ -1,23 +1,35 @@
-name: Generate Mermaid Diagrams from Structurizr DSL
+name: Structurizr to Mermaid Conversion
 
-on:
-  push:
-    branches: [main]
-    paths:
-      - '**/*.dsl'
-  pull_request:
-    paths:
-      - '**/*.dsl'
+on: [push]  # Trigger the workflow on push events
 
 jobs:
-  update-diagrams:
+  convert-dsl:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t my-structurizr-image --cache-from my-structurizr-image:latest .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Process DSL Files
-        run: docker run --rm -v ${{ github.workspace }}:/usr/local/structurizr my-structurizr-image
+      - name: Build Docker image (optional)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v3
+        with:
+          context: .  # Assuming Dockerfile is in the root
+          file: Dockerfile  # Replace with your Dockerfile name if needed
+          push: false
+          tags: structurizr-cli  # Replace with your desired tag
+
+      - name: Run Structurizr CLI
+        run: |
+          docker run --rm -v $(pwd):/workspace structurizr-cli:latest \
+            workspace-convert /workspace/*.dsl /workspace/mermaid/*.mmd \
+            --format mermaid
+
+      - name: Commit Mermaid files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Converted DSL files to Mermaid"
+          branch: main
+          file_pattern: mermaid/*
