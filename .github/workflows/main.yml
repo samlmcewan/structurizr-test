@@ -24,7 +24,7 @@ jobs:
       - name: Export Structurizr workspaces
         uses: gilbertotcc/structurizr-action@v1
         with:
-          args: ${{ format('export -workspace {0} -format mermaid -output mermaid', env.DSL_FILES) }}
+          args: export -workspace "${DSL_FILES}" -format mermaid -output mermaid
 
       - name: Commit exported Mermaid diagrams
         uses: EndBug/add-and-commit@v8
