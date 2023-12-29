@@ -9,6 +9,9 @@ jobs:
   process-and-export:
     runs-on: ubuntu-latest
 
+    env:
+      DSL_FILES: ""
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -16,14 +19,12 @@ jobs:
       - name: Find DSL files
         id: find_dsl_files
         run: |
-          echo "::set-output name=dsl_files::$(find . -name '*.dsl' -type f)"
+          export DSL_FILES=$(find . -name '*.dsl' -type f)
 
       - name: Export Structurizr workspaces
         uses: gilbertotcc/structurizr-action@v1
         with:
-          args: ${{ format('export -workspace {0} -format mermaid -output mermaid', steps.find_dsl_files.outputs.dsl_files) }}
-        env:
-          DSL_FILES: ${{ steps.find_dsl_files.outputs.dsl_files }}
+          args: ${{ format('export -workspace {0} -format mermaid -output mermaid', env.DSL_FILES) }}
 
       - name: Commit exported Mermaid diagrams
         uses: EndBug/add-and-commit@v8
@@ -37,8 +38,3 @@ jobs:
           pathspec_error_handling: ignore
           push: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-
-# Address deprecated `set-output` warnings:
-# 1. Replace outdated syntax with environment variables in `structurizr-action` step.
-# 2. Update other steps accordingly or switch to using built-in `git` action for commit/push.
