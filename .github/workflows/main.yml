@@ -3,8 +3,7 @@ name: Process DSL and Export to Mermaid
 on:
   push:
     paths:
-      - 'workspace-3.dsl'  # Replace with the actual path to your DSL file
-      #  - '**/*.dsl'
+      - 'workspace-3.dsl'  # Path to the DSL file in the root directory
 
 jobs:
   process-and-export:
@@ -14,16 +13,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run structurizr-cli action
-        uses: aidmax/structurizr-cli-action@v1
-        with:
-          version: latest  # Or specify a specific version if needed
+      - name: Setup Docker
+        uses: actions/setup-docker@v2
+
+      - name: Login to Docker Hub (optional)
+        # If your Docker registry requires authentication, uncomment this step
+        # and provide your Docker Hub credentials
+        # run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Pull Structurizr CLI image
+        run: docker pull structurizr/cli:latest
 
       - name: Process DSL file
-        run: structurizr process -f workspace-3.dsl
+        run: docker run --rm -v $(pwd):/workspace structurizr/cli process -f /workspace/workspace-3.dsl
 
       - name: Export to Mermaid
-        run: structurizr export -f mermaid -o architecture.mermaid
+        run: docker run --rm -v $(pwd):/workspace structurizr/cli export -f mermaid -o architecture.mermaid
 
       - name: Commit exported Mermaid diagram
         uses: EndBug/add-and-commit@v8
@@ -32,3 +37,4 @@ jobs:
           author_email: github-actions@github.com
           message: "[Automated] Added Mermaid diagram from DSL"
           add: architecture.mermaid
+
