@@ -4,10 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - '**/*.dsl'  # Trigger only when DSL files change
+      - '**/*.dsl'
   pull_request:
     paths:
-      - '**/*.dsl'  # Trigger on pull requests with DSL changes
+      - '**/*.dsl'
 
 jobs:
   update-diagrams:
@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t my-structurizr-image .  # Build image using Dockerfile with CMD
+        run: docker build -t my-structurizr-image --cache-from my-structurizr-image:latest .
 
       - name: Process DSL Files
-        run: docker run --rm -v $PWD:/usr/local/structurizr my-structurizr-image  # No need to specify a command
+        run: docker run --rm -v ${{ github.workspace }}:/usr/local/structurizr my-structurizr-image
