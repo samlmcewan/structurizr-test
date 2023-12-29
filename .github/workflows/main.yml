@@ -18,7 +18,7 @@ jobs:
             image: structurizr/cli:latest
             options: -v ${{ github.workspace }}:/var/www
             run: |
-                export WORKSPACE_PATH=$(pwd)/workspace-3.dsl -workspace /home/workspace-3.dsl -format mermaid -o /home/
+                export WORKSPACE_PATH=$(pwd)/workspace-3.dsl -workspace workspace-3.dsl -format mermaid
       - name: Commit exported Mermaid diagram
         uses: EndBug/add-and-commit@v8
         with:
