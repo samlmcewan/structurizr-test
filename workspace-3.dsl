@@ -11,9 +11,4 @@ workspace "Example workspace 1324435424" "Example description 3" {
         user -> webapp "Uses"
         webapp -> database "Reads from and writes to"
     }
-
-    views {
-        theme default
-    }
-
 }
