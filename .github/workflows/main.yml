@@ -14,8 +14,8 @@ jobs:
 
       - name: Run Structurizr CLI
         run: |
-          docker run --rm -v $(pwd):/usr/local/structurizr structurizr/cli:latest \
-            export -workspace /usr/local/structurizr/*.dsl -format mermaid -output /usr/local/structurizr/mermaid
+          docker run --rm -v $(pwd):. structurizr/cli:latest \
+            export -workspace ./*.dsl -format mermaid -output mermaid
 
       - name: Commit Mermaid files
         uses: stefanzweifel/git-auto-commit-action@v4
