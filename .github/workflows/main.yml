@@ -23,13 +23,13 @@ jobs:
 
       - name: Set up DSL files for Structurizr CLI
         run: |
-          mkdir -p /github/workspace/dsl
-          cp $DSL_FILES /github/workspace/dsl/
+          mkdir -p $GITHUB_WORKSPACE/dsl
+          cp $DSL_FILES $GITHUB_WORKSPACE/dsl/
 
       - name: Export Structurizr workspaces
         uses: gilbertotcc/structurizr-action@v1
         with:
-          args: export -workspace "/github/workspace/dsl" -format mermaid -output mermaid
+          args: export -workspace "$GITHUB_WORKSPACE/dsl" -format mermaid -output mermaid
 
       - name: Commit exported Mermaid diagrams
         uses: EndBug/add-and-commit@v8
