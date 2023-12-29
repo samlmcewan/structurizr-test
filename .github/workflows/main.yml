@@ -24,7 +24,9 @@ jobs:
       - name: Set up DSL files for Structurizr CLI
         run: |
           mkdir -p $GITHUB_WORKSPACE/dsl
-          cp $DSL_FILES $GITHUB_WORKSPACE/dsl/
+          for file in $DSL_FILES; do
+            cp "$file" $GITHUB_WORKSPACE/dsl/
+          done
 
       - name: Export Structurizr workspaces
         uses: gilbertotcc/structurizr-action@v1
