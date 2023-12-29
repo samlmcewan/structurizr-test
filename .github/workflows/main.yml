@@ -19,9 +19,10 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
             structurizr/cli:latest \
-            generate-mermaid-diagrams \
-            --workspace /workspace \
-            --output-directory /workspace/mermaid
+            export \
+            -workspace /workspace/*.dsl \
+            -format mermaid \
+            -output-directory /workspace/mermaid
 
       - name: Commit and push Mermaid files
         run: |
