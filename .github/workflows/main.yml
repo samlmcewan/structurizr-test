@@ -1,33 +1,35 @@
-name: Convert DSL to Mermaid
+
+name: Process DSL and Export to Mermaid
 
 on:
   push:
-    branches: [main]
     paths:
-      - '**/*.dsl'
+      - './workspace-3.dsl'  # Replace with the actual path to your DSL file
+      #  - '**/*.dsl'
 
 jobs:
-  build:
+  process-and-export:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Run Structurizr CLI
-        run: |
-          docker pull structurizr/cli:latest
-          docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            structurizr/cli:latest \
-            export \
-            -workspace /workspace/*.dsl \
-            -format mermaid \
-            -output-directory /workspace/mermaid
+      - name: Install Structurizr CLI
+        uses: structurizr/structurizr-cli-action@v1
+        with:
+          version: latest  # Or specify a specific version if needed
 
-      - name: Commit and push Mermaid files
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "Generated Mermaid files"
-          git push
+      - name: Process DSL file
+        run: structurizr process -f ./workspace-3.dsl
+
+      - name: Export to Mermaid
+        run: structurizr export -f mermaid -o architecture.mermaid
+
+      - name: Commit exported Mermaid diagram
+        uses: EndBug/add-and-commit@v8
+        with:
+          author_name: GitHub Action
+          author_email: github-actions@github.com
+          message: "[Automated] Added Mermaid diagram from DSL"
+          add: architecture.mermaid
