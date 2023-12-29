@@ -19,12 +19,12 @@ jobs:
       - name: Find DSL files
         id: find_dsl_files
         run: |
-          export DSL_FILES=$(find . -name '*.dsl' -type f)
+          IFS=$'\n' read -rd '' -a DSL_FILES <<< "$(find . -name '*.dsl' -type f)"
 
       - name: Set up DSL files for Structurizr CLI
         run: |
           mkdir -p $GITHUB_WORKSPACE/dsl
-          for file in $DSL_FILES; do
+          for file in "${DSL_FILES[@]}"; do
             cp "$file" $GITHUB_WORKSPACE/dsl/
           done
 
