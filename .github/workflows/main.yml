@@ -9,19 +9,32 @@ jobs:
   process-and-export:
     runs-on: ubuntu-latest
 
+    env:
+      # Use Environment Files for DSL paths (recommended)
+      DSL_FILE_PATH: ./DSL_FILES.env
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Find DSL files in root directory
+      - name: Load DSL file paths from Environment File (optional)
+        id: load_dsl_files
+        env:
+          DSL_FILE_PATH: ./DSL_FILES.env  # Update path if your file is elsewhere
         run: |
-          DSL_FILES=$(find . -name '*.dsl' -type f)
-          echo "::set-env name=DSL_FILES::$DSL_FILES"  # Set environment variable
+          # Use file if it exists; otherwise, fallback to finding files directly
+          if [ -f "$DSL_FILE_PATH" ]; then
+            DSL_FILES=$(cat $DSL_FILE_PATH)
+          else
+            echo "::warning:: Environment file '$DSL_FILE_PATH' not found. Falling back to searching for .dsl files..."
+            DSL_FILES=$(find . -name '*.dsl' -type f)
+          fi
 
       - name: Set up DSL files for Structurizr CLI
         run: |
           mkdir -p $GITHUB_WORKSPACE/dsl
-          for file in $DSL_FILES; do  # Access variable directly
+          # Use DSL_FILES from either Environment File or search if not available
+          for file in $DSL_FILES; do
             cp $file $GITHUB_WORKSPACE/dsl/
           done
 
@@ -42,3 +55,4 @@ jobs:
           pathspec_error_handling: ignore
           push: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
